@@ -10,5 +10,10 @@ namespace ConsoleGraphTheory
     {
         public string Name { set; get; }
         public int ID { set; get; }
+        public NodeGraph(string name, int ID)
+        {
+            this.Name = name;
+            this.ID = ID;
+        }
     }
 }

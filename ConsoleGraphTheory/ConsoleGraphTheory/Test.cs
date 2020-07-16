@@ -6,11 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleGraphTheory
 {
-    class Program
+    class Test
     {
-        static void Main(string[] args)
-        {
-            Console.ReadKey();
-        }
     }
 }

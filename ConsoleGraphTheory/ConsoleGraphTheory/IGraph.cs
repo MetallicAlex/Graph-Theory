@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace ConsoleGraphTheory
 {
-    class Program
+    interface IGraph
     {
-        static void Main(string[] args)
-        {
-            Console.ReadKey();
-        }
+        void ShowProperty();
+        void ShowNode();
+        void ShowDegs();
     }
 }
