@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleGraphTheory
 {
-    struct NodeGraph
+    struct NodeGraph: IComparable<NodeGraph>
     {
         public string Name { set; get; }
         public int ID { set; get; }
@@ -14,6 +14,15 @@ namespace ConsoleGraphTheory
         {
             this.Name = name;
             this.ID = ID;
+        }
+        public NodeGraph(int ID)
+        {
+            this.Name = ID.ToString();
+            this.ID = ID;
+        }
+        public int CompareTo(NodeGraph node)
+        {
+            return this.ID.CompareTo(node.ID);
         }
     }
 }

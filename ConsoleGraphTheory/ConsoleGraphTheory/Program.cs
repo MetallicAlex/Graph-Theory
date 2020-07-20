@@ -10,6 +10,7 @@ namespace ConsoleGraphTheory
     {
         static void Main(string[] args)
         {
+            Test.AddNodes();
             Console.ReadKey();
         }
     }

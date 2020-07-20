@@ -6,171 +6,211 @@ using System.Threading.Tasks;
 
 namespace ConsoleGraphTheory
 {
-    partial class Graph: IComparer<NodeGraph>, IGraph
+    partial class Graph : IGraph
     {
         public string Name { set; get; }
         private int ID;
         private static int amountGraph = 0;
-        public SortedDictionary<NodeGraph, List<NodeGraph>> Edges { set; get; }
-        private List<NodeGraph> degs;
-        public Graph()
+        public List<Edge> Edges { set; get; }
+        private List<NodeGraph> nodes;
+        public Graph(List<NodeGraph> nodes)
         {
             amountGraph++;
             this.ID = amountGraph;
             this.Name = "Graph " + this.ID.ToString();
-            this.Edges = new SortedDictionary<NodeGraph, List<NodeGraph>>();
-            this.degs = new List<NodeGraph>();
+            this.Edges = new List<Edge>();
+            this.nodes = nodes;
+        }
+        public Graph(List<Edge> edges)
+        {
+            amountGraph++;
+            this.ID = amountGraph;
+            this.Name = "Graph " + this.ID.ToString();
+            this.Edges = edges;
+            this.nodes = new List<NodeGraph>();
+            foreach(var edge in this.Edges)
+            {
+                this.nodes.Add(edge.FirstNode);
+                this.nodes.Add(edge.SecondNode);
+            }
+            var newNode = this.nodes.GroupBy(x => x.ID).Select(x => x.First()).ToList();
+            this.nodes = newNode;
+        }
+        public Graph(List<NodeGraph> nodes, List<Edge> edges)
+        {
+            amountGraph++;
+            this.ID = amountGraph;
+            this.Name = "Graph " + this.ID.ToString();
+            this.Edges = edges;
+            this.nodes = nodes;
         }
         public Graph(string name)
         {
             amountGraph++;
             this.ID = amountGraph;
             this.Name = name;
-            this.Edges = new SortedDictionary<NodeGraph, List<NodeGraph>>();
-            this.degs = new List<NodeGraph>();
+            this.Edges = new List<Edge>();
+            this.nodes = new List<NodeGraph>();
         }
-        public int Compare(NodeGraph nodeGraph1, NodeGraph nodeGraph2)
+        public void AddNode(NodeGraph nodeGraph)
         {
-            if(nodeGraph1.ID > nodeGraph2.ID)
-                return 1;
-            else if (nodeGraph1.ID < nodeGraph2.ID)
-                return -1;
-            else
-                return 0;
+            this.nodes.Add(nodeGraph);
         }
-        public void AddNode(NodeGraph nodeGraph, List<NodeGraph> edges)
+        public void AddNode(int ID)
         {
-            this.Edges.Add(nodeGraph, edges);
+            NodeGraph nodeGraph = new NodeGraph(ID);
+            this.nodes.Add(nodeGraph);
         }
-        public void AddNode(NodeGraph nodeGraph, List<int> edges)
-        {
-            List<NodeGraph> listEdges = new List<NodeGraph>();
-            foreach (var node in Edges)
-            {
-                for (int i = 0; i < edges.Count; i++)
-                {
-                    if (node.Key.ID == edges[i])
-                    {
-                        listEdges.Add(node.Key);
-                        edges.RemoveAt(i);
-                        break;
-                    }
-                }
-            }
-            this.Edges.Add(nodeGraph, listEdges);
-        }
-        public void AddNode(NodeGraph nodeGraph, List<string> edges)
-        {
-            List<NodeGraph> listEdges = new List<NodeGraph>();
-            foreach (var node in Edges)
-            {
-                for (int i = 0; i < edges.Count; i++)
-                {
-                    if (node.Key.Name == edges[i])
-                    {
-                        listEdges.Add(node.Key);
-                        edges.RemoveAt(i);
-                        break;
-                    }
-                }
-            }
-            this.Edges.Add(nodeGraph, listEdges);
-        }
-        public void AddNode(string name, int ID, List<NodeGraph> edges)
+        public void AddNode(string name, int ID)
         {
             NodeGraph nodeGraph = new NodeGraph(name, ID);
-            this.Edges.Add(nodeGraph, edges);
+            this.nodes.Add(nodeGraph);
         }
-        public void AddNode(string name, int ID, List<int> edges)
+        public void AddNode(NodeGraph nodeGraph, List<NodeGraph> connectedNodes)
         {
-            NodeGraph nodeGraph = new NodeGraph(name, ID);
-            List<NodeGraph> listEdges = new List<NodeGraph>();
-            foreach (var node in Edges)
+            foreach (var connectedNode in connectedNodes)
+                this.Edges.Add(new Edge(nodeGraph, connectedNode));
+        }
+        public void AddNode(NodeGraph nodeGraph, List<int> connectedNodes)
+        {
+            foreach (var node in nodes)
             {
-                for (int i = 0; i < edges.Count; i++)
+                for (int i = 0; i < connectedNodes.Count; i++)
                 {
-                    if (node.Key.ID == edges[i])
+                    if (node.ID == connectedNodes[i])
                     {
-                        listEdges.Add(node.Key);
-                        edges.RemoveAt(i);
+                        this.Edges.Add(new Edge(nodeGraph, node));
+                        connectedNodes.RemoveAt(i);
                         break;
                     }
                 }
             }
-            this.Edges.Add(nodeGraph, listEdges);
         }
-        public void AddNode(string name, int ID, List<string> edges)
+        public void AddNode(NodeGraph nodeGraph, List<string> connectedNodes)
         {
-            NodeGraph nodeGraph = new NodeGraph(name, ID);
-            List<NodeGraph> listEdges = new List<NodeGraph>();
-            foreach (var node in Edges)
+            foreach (var node in nodes)
             {
-                for (int i = 0; i < edges.Count; i++)
+                for (int i = 0; i < connectedNodes.Count; i++)
                 {
-                    if (node.Key.Name == edges[i])
+                    if (node.Name == connectedNodes[i])
                     {
-                        listEdges.Add(node.Key);
-                        edges.RemoveAt(i);
+                        this.Edges.Add(new Edge(nodeGraph, node));
+                        connectedNodes.RemoveAt(i);
                         break;
                     }
                 }
             }
-            this.Edges.Add(nodeGraph, listEdges);
+        }
+        public void AddNode(string name, int ID, List<NodeGraph> connectedNodes)
+        {
+            NodeGraph nodeGraph = new NodeGraph(name, ID);
+            foreach (var node in connectedNodes)
+                this.Edges.Add(new Edge(nodeGraph, node));
+        }
+        public void AddNode(string name, int ID, List<int> connectedNodes)
+        {
+            NodeGraph nodeGraph = new NodeGraph(name, ID);
+            foreach (var node in nodes)
+            {
+                for (int i = 0; i < connectedNodes.Count; i++)
+                {
+                    if (node.ID == connectedNodes[i])
+                    {
+                        this.Edges.Add(new Edge(nodeGraph, node));
+                        connectedNodes.RemoveAt(i);
+                        break;
+                    }
+                }
+            }
+        }
+        public void AddNode(string name, int ID, List<string> connectedNodes)
+        {
+            NodeGraph nodeGraph = new NodeGraph(name, ID);
+            foreach (var node in nodes)
+            {
+                for (int i = 0; i < connectedNodes.Count; i++)
+                {
+                    if (node.Name == connectedNodes[i])
+                    {
+                        this.Edges.Add(new Edge(nodeGraph, node));
+                        connectedNodes.RemoveAt(i);
+                        break;
+                    }
+                }
+            }
         }
         public void RemoveNode(NodeGraph nodeGraph)
         {
-            foreach (var node in Edges)
+            foreach (var node in nodes)
             {
-                if (Equals(node.Key, nodeGraph))
+                if (Equals(node, nodeGraph))
                 {
-                    Edges.Remove(node.Key);
+                    nodes.Remove(node);
+                    foreach (var edge in Edges)
+                    {
+                        if (Equals(node, edge.FirstNode) || Equals(node, edge.SecondNode))
+                        {
+                            this.Edges.Remove(edge);
+                        }
+                    }
                     break;
                 }
             }
         }
         public void RemoveNode(string name)
         {
-            foreach (var node in Edges)
+            foreach (var node in nodes)
             {
-                if (Equals(node.Key.Name, name))
+                if (Equals(node.Name, name))
                 {
-                    Edges.Remove(node.Key);
+                    nodes.Remove(node);
+                    foreach (var edge in Edges)
+                    {
+                        if (Equals(node, edge.FirstNode) || Equals(node, edge.SecondNode))
+                        {
+                            this.Edges.Remove(edge);
+                        }
+                    }
                     break;
                 }
             }
         }
         public void RemoveNode(int ID)
         {
-            foreach (var node in Edges)
+            foreach (var node in nodes)
             {
-                if (Equals(node.Key.ID, ID))
+                if (Equals(node.ID, ID))
                 {
-                    Edges.Remove(node.Key);
+                    nodes.Remove(node);
+                    foreach (var edge in Edges)
+                    {
+                        if (Equals(node, edge.FirstNode) || Equals(node, edge.SecondNode))
+                        {
+                            this.Edges.Remove(edge);
+                        }
+                    }
                     break;
                 }
             }
         }
-        public int Deg(NodeGraph nodeGraph)
+        public void AddEdge(params Edge[] edges)
         {
-            return Edges[nodeGraph].Count;
+            for (int i = 0; i < edges.Length; i++)
+                this.Edges.Add(edges[i]);
         }
-        public int Deg(int ID)
+        public void AddEdge(List<Edge> edges)
         {
-            foreach(var edge in Edges)
-            {
-                if(edge.Key.ID == ID)
-                    return edge.Value.Count;
-            }
-            return -1;
+            this.Edges.AddRange(edges);
         }
-        public int Deg(string name)
+        public void RemoveEdge(params Edge[] edges)
         {
-            foreach (var edge in Edges)
-            {
-                if (edge.Key.Name == name)
-                    return edge.Value.Count;
-            }
-            return -1;
+            for (int i = 0; i < edges.Length; i++)
+                this.Edges.Remove(edges[i]);
+        }
+        public void RemoveEdge(List<Edge> edges)
+        {
+            foreach (var edge in edges)
+                this.Edges.Remove(edge);
         }
     }
 }
