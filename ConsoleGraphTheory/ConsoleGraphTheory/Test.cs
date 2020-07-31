@@ -10,14 +10,14 @@ namespace ConsoleGraphTheory
     {
         public static void AddNodes()
         {
-            Graph graph = new Graph("Graph1");
-            graph.AddEdge(new Edge(new NodeGraph(1), new NodeGraph(4)),
-                          new Edge(new NodeGraph(2), new NodeGraph(3)),
-                          new Edge(new NodeGraph(1), new NodeGraph(3)),
-                          new Edge(new NodeGraph(4), new NodeGraph(2))
-                          );
-            graph.ShowNode();
-            graph.RemoveEdge(new Edge(new NodeGraph(1), new NodeGraph(3)));
+            List<Node> nodes = new List<Node>();
+            nodes.Add(new Node("a"));
+            nodes.Add(new Node("b"));
+            Graph graph = new Graph();
+            graph.AddNode("d");
+            graph.AddNode(nodes[0]);
+            graph.AddNode("c", nodes);
+            graph.AddEdge(new Edge("a", "b"), new Edge("d", "a"));
             graph.ShowNode();
         }
     }
