@@ -69,17 +69,13 @@ namespace ConsoleGraphTheory
         public void AddNode(string name)
         {
             Node nodeGraph = new Node(name);
-            this.nodes.Add(nodeGraph);
-            this.nodes = this.nodes.Distinct().ToList();
-            this.nodes.Sort();
+            this.AddNode(nodeGraph);
         }
         public void AddNode(Node nodeGraph, List<Node> connectedNodes)
         {
             foreach (var connectedNode in connectedNodes)
                 this.Edges.Add(new Edge(nodeGraph, connectedNode));
-            this.nodes.Add(nodeGraph);
-            this.nodes = this.nodes.Distinct().ToList();
-            this.nodes.Sort();
+            this.AddNode(nodeGraph);
         }
         public void AddNode(Node nodeGraph, List<string> connectedNodes)
         {
@@ -95,9 +91,7 @@ namespace ConsoleGraphTheory
                     }
                 }
             }
-            this.nodes.Add(nodeGraph);
-            this.nodes = this.nodes.Distinct().ToList();
-            this.nodes.Sort();
+            this.AddNode(nodeGraph);
             this.Edges.Sort();
         }
         public void AddNode(string name, List<Node> connectedNodes)
@@ -105,9 +99,7 @@ namespace ConsoleGraphTheory
             Node nodeGraph = new Node(name);
             foreach (var node in connectedNodes)
                 this.Edges.Add(new Edge(nodeGraph, node));
-            this.nodes.Add(nodeGraph);
-            this.nodes = this.nodes.Distinct().ToList();
-            this.nodes.Sort();
+            this.AddNode(nodeGraph);
             this.Edges.Sort();
         }
         public void AddNode(string name, List<string> connectedNodes)
@@ -125,8 +117,7 @@ namespace ConsoleGraphTheory
                     }
                 }
             }
-            this.nodes.Add(nodeGraph);
-            this.nodes = this.nodes.Distinct().ToList();
+            this.AddNode(nodeGraph);
             this.Edges.Sort();
         }
         public void RemoveNode(Node nodeGraph)
